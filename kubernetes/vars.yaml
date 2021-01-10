@@ -1,1 +1,2 @@
 controlPlaneEndpoint: example.com
+kube_version: "1.19.0"
