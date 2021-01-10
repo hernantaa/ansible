@@ -1,0 +1,52 @@
+- name: Copy kubeadm-config.yaml file
+  template:
+    src: templates/kubeadm-config.yaml.j2
+    dest: /home/ubuntu/kubeadm-config.yaml
+    mode: 0755
+ 
+- name: Initialize the cluster
+  shell: sudo kubeadm init --config=/home/ubuntu/kubeadm-config.yaml --upload-certs > kubeadm_init.log
+  args:
+    chdir: $HOME
+    creates: kubeadm_init.log
+
+- name: Create .kube directory
+  become: yes
+  become_user: ubuntu
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: Copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ubuntu/.kube/config
+    remote_src: yes
+    owner: ubuntu
+
+- name: Download calico.yaml
+  get_url:
+    url: https://docs.projectcalico.org/manifests/calico.yaml
+    dest: /home/ubuntu/calico.yaml
+    mode: '0755'
+
+- name: Configure CALICO_IPV4POOL_CIDR inside calico.yaml
+  replace:
+    path: /home/ubuntu/calico.yaml
+    regexp: '            # - name: CALICO_IPV4POOL_CIDR'
+    replace: '            - name: CALICO_IPV4POOL_CIDR'
+
+- name: Configure IP_ADDR inside calico.yaml
+  replace:
+    path: /home/ubuntu/calico.yaml
+    regexp: '            #   value:'
+    replace: '              value:'
+        
+- name: Install Pod network
+  become: yes
+  become_user: ubuntu
+  shell: kubectl apply -f /home/ubuntu/calico.yaml > cni_setup.log
+  args:
+    chdir: $HOME
+    creates: cni_setup.log

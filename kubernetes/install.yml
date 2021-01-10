@@ -1,0 +1,39 @@
+- name: Configure kubernetes packages on Master
+  hosts: master
+  become: true
+
+  tasks:
+  - import_role:
+      name: master-prep
+
+- name: Configure kubernetes packages on Nodes
+  hosts: nodes
+  become: true
+
+  tasks:
+  - import_role:
+      name: node-prep
+
+- name: Configure hosts on all nodes
+  hosts: all
+  become: true
+
+  tasks:
+  - import_role:
+      name: hosts
+
+- name: Kubeadm init on Master
+  hosts: master
+  become: true
+
+  tasks:
+  - import_role:
+      name: kubeadm-init
+
+- name: Kubeadm join on nodes
+  hosts: nodes
+  become: true
+
+  tasks:
+  - import_role:
+      name: join-nodes

@@ -1,0 +1,52 @@
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+    update_cache: true
+
+- name: Restart Docker
+  systemd:
+    name: docker
+    state: restarted
+
+- name: Enabled Docker
+  systemd:
+    name: docker
+    enabled: yes
+
+- name: Install software-properties-common
+  apt:
+    name: software-properties-common
+    state: present
+
+- name: Add a GPG key for the kubernetes packages
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add a new repo for kubernetes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: 'kubernetes'
+
+- name: Install kubelet
+  apt:
+    name: kubelet=1.19.0-00
+    state: present
+    update_cache: true
+
+- name: Install kubeadm
+  apt:
+    name: kubeadm=1.19.0-00
+    state: present
+
+- name: Prevent kubelet packages from being upgraded
+  dpkg_selections:
+    name: kubelet
+    selection: hold 
+
+- name: Prevent kubeadm packages from being upgraded
+  dpkg_selections:
+    name: kubeadm
+    selection: hold
