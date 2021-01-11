@@ -1,0 +1,23 @@
+- name: Configure kubernetes packages on Nodes
+  hosts: new_nodes
+  become: true
+
+  tasks:
+  - import_role:
+      name: node-prep
+
+- name: Configure hosts on all nodes
+  hosts: all
+  become: true
+
+  tasks:
+  - import_role:
+      name: hosts
+
+- name: Kubeadm join on nodes
+  hosts: new_nodes
+  become: true
+
+  tasks:
+  - import_role:
+      name: join-nodes
