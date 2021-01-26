@@ -30,6 +30,14 @@
   - import_role:
       name: kubeadm-init
 
+- name: Configure Cloud Provider OpenStack
+  hosts: master
+  become: true
+
+  tasks:
+  - import_role:
+      name: cloud-provider-openstack      
+
 - name: Kubeadm join on nodes
   hosts: nodes
   become: true

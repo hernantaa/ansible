@@ -1,0 +1,36 @@
+- name: Create a secret containing the cloud configuration
+  become: yes
+  become_user: ubuntu
+  shell: sudo cp /etc/kubernetes/cloud-config /home/ubuntu/cloud.conf
+  args:
+    chdir: $HOME
+    creates: cloud-provider-openstack.log
+
+- name: Create a secret containing the cloud configuration
+  become: yes
+  become_user: ubuntu
+  shell: kubectl create secret -n kube-system generic cloud-config --from-file=cloud.conf >> cloud-provider-openstack.log
+  args:
+    chdir: $HOME
+    creates: cloud-provider-openstack.log
+
+- name: Create RBAC resources and cloud-controller-manager-roles
+  become: yes
+  become_user: ubuntu
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/cluster/addons/rbac/cloud-controller-manager-roles.yaml >> cloud-provider-openstack.log
+  args:
+    chdir: $HOME
+
+- name: Create RBAC resources and cloud-controller-manager-role-bindings
+  become: yes
+  become_user: ubuntu
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/cluster/addons/rbac/cloud-controller-manager-role-bindings.yaml >> cloud-provider-openstack.log
+  args:
+    chdir: $HOME
+
+- name: Create RBAC resources and openstack-cloud-controller-manager deamonset
+  become: yes
+  become_user: ubuntu
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/controller-manager/openstack-cloud-controller-manager-ds.yaml >> cloud-provider-openstack.log
+  args:
+    chdir: $HOME

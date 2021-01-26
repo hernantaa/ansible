@@ -3,6 +3,12 @@
     src: templates/kubeadm-config.yaml.j2
     dest: /home/ubuntu/kubeadm-config.yaml
     mode: 0755
+
+- name: Copy cloud-config file
+  template:
+    src: templates/cloud-config.j2
+    dest: /etc/kubernetes/cloud-config
+    mode: 0755    
  
 - name: Initialize the cluster
   shell: sudo kubeadm init --config=/home/ubuntu/kubeadm-config.yaml --upload-certs > kubeadm_init.log

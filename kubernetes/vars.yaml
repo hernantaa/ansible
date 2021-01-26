@@ -1,2 +1,20 @@
+##### KUBERNETES CONFIG #####
 controlPlaneEndpoint: example.com
-kube_version: "1.19.0"
+kube_version: "1.19.3"
+
+##### OPENSTACK CONFIG #####
+region: RegionOne
+username: nanta
+password: nanta
+auth-url: "http://192.168.100.151:5000/v3"
+tenant-id: "30ddee7b10c145a698c7c6d2292109c2"
+domain-id: default
+
+## LOAD BALANCER 
+subnet-id: "10e18b4c-35b3-4cea-8b4c-89a55802d267"
+floating-network-id: "93767681-b761-461c-ba57-7ea01c78a487"
+use-octavia: "true"
+
+## NETWORKING
+public-network-name: public
+ipv6-support-disabled: "false"
